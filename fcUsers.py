@@ -44,9 +44,9 @@ def pred(user,item,k):
     sum2 = 0
     pred = 0
     for y in range(0,k):
-        vUser = sim[x][1] 
-        sum1 += sim[x][0] * mat[vUser][item]
-        sum2 += sim[x][0]
+        vUser = sim[y][1] 
+        sum1 += sim[y][0] * (mat[vUser][item] - vBias)
+        sum2 += sim[y][0]
     pred = uBias + sum1/sum2
     sim.clear()
     return pred
@@ -56,5 +56,5 @@ if __name__=='__main__':
     for ind in test.index:
         user = test['user_id'][ind]-1
         item = test['movie_id'][ind]-1
-        nada = pred(user,item,10)
+        nada = pred(user,item,100)
         print(nada)
