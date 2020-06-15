@@ -43,7 +43,6 @@ def pred(user,item,k):
         u.clear()
         v.clear()
     sim = sorted(sim, key=lambda tup: tup[0], reverse=True)
-    print(len(sim))
     sum1 = 0
     sum2 = 0
     pred = 0
@@ -53,11 +52,11 @@ def pred(user,item,k):
         sum2 += sim[y][0]
     pred = uBias + sum1/sum2
     sim.clear()
-    return pred
+    print(pred)
 
 if __name__=='__main__':
     test = pd.read_csv('data/test.csv')
     for ind in test.index:
         user = test['user_id'][ind]-1
         item = test['movie_id'][ind]-1
-        nada = pred(user,item,5)
+        pred(user,item,5)
