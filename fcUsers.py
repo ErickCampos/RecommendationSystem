@@ -11,6 +11,8 @@ def pred(user,item,k):
     for i in range(0, 3974):
         sum1 = 0
         sum2 = 0
+        sumU = 0
+        sumV = 0
         result = 0
         if i == user or math.isnan(mat[i][item]):
             continue
@@ -30,16 +32,18 @@ def pred(user,item,k):
             sim.append((0,i))
         for x in range(0, len(u)):
             sum1 += (u[x]-uBias) * (v[x]-vBias)
-            sum2 += np.sqrt(np.power((u[x]-uBias),2)) * np.sqrt(np.power((v[x]-vBias),2))
-        result = sum1/sum2 #similarity
+            sumU += np.power((u[x]-uBias),2)
+            sumV += np.power((v[x]-vBias),2)
+        result = sum1/(np.sqrt(sumU) * np.sqrt(sumV))#similarity
         if math.isnan(result):
-            sim.append((0,i))
+            continue
         else:
             #print(result)
             sim.append((result,i))
         u.clear()
         v.clear()
-    sim = sorted(sim, key=lambda tup: tup[0])
+    sim = sorted(sim, key=lambda tup: tup[0], reverse=True)
+    print(len(sim))
     sum1 = 0
     sum2 = 0
     pred = 0
@@ -52,9 +56,8 @@ def pred(user,item,k):
     return pred
 
 if __name__=='__main__':
-    test = pd.read_csv('data/train.csv')
+    test = pd.read_csv('data/test.csv')
     for ind in test.index:
         user = test['user_id'][ind]-1
         item = test['movie_id'][ind]-1
-        nada = pred(user,item,100)
-        print(nada)
+        nada = pred(user,item,5)
