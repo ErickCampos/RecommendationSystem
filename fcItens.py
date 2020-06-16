@@ -8,9 +8,6 @@ def pred(user,item,k):
     jItem = []
     sim = []
     for i in range(0,3564):#itens
-        sum1 = 0
-        sum2 = 0
-        result = 0
         if math.isnan(mat[user][i]):#verifica se item foi avaliado pelo usuário testado
             continue
         if i == item:#verifica se o item é igual ao item testado?
@@ -22,6 +19,11 @@ def pred(user,item,k):
         if math.isnan(jBias):
              jBias = 0
         for j in range(0,3974):#usuarios
+            sum1 = 0
+            sum2 = 0
+            sumI = 0
+            sumJ = 0
+            result = 0
             if math.isnan(mat[j][item]) or j == user: #verifica se não tem nota ou usuário atual é igual o usuário de teste
                 continue
             if math.isnan(mat[j][item]) or math.isnan(mat[j][i]):# se os itens foram simultaneamente votados
@@ -35,13 +37,13 @@ def pred(user,item,k):
             continue
         for x in range(0,len(iItem)):
             sum1 += (iItem[x] - iBias) * (jItem[x] - jBias) #somatorio do numerador da similaridade
-            sum2 += np.sqrt(np.power((iItem[x]-iBias),2)) * np.sqrt(np.power((jItem[x]-jBias),2))#somatorio do demoninador da similaridade 
+            sumI += np.power((iItem[x]-iBias),2)
+            sumJ += np.power((jItem[x]-jBias),2)
             sum1 = round(sum1,4)
-            sum2 = round(sum2,4)
-            #print(sum1,end =' ') 
-            #print(sum2)
-        result = sum1/sum2 #similaridade
-        result - round(result,4)
+            sumI = round(sumI,4) 
+            sumJ = round(sumJ,4) 
+        result = sum1/(np.sqrt(sumI) * np.sqrt(sumJ)) #similaridade
+        result = round(result,4)
         if math.isnan(result):
             iItem.clear()
             jItem.clear()
@@ -53,7 +55,7 @@ def pred(user,item,k):
     sum1 = 0
     sum2 = 0
     pred = 0
-    print(len(sim))
+    #print(len(sim))
     if k > len(sim):
         k = len(sim)
     for y in range(0,k):
@@ -64,8 +66,11 @@ def pred(user,item,k):
         sum2 = round(sum2,4)
         #print(sum1, end=' ') 
         #print(sum2)
-    #pred = sum1/sum2#predição
-    #pred = round(pred,4)
+    if sum2 == 0:
+        pass
+    pred = sum1/sum2#predição
+    pred = round(pred,4)
+    print(pred)
 
 if __name__=='__main__':
     test = pd.read_csv('data/test.csv')
