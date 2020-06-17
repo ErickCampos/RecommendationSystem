@@ -3,7 +3,7 @@ import pandas as pd
 import math
 
 def pred(user,item,k):
-    mat = np.load('train.npy')
+    mat = np.load('../train.npy')
     u = []#user test 
     v = []#user train 
     sim = []
@@ -71,7 +71,7 @@ def pred(user,item,k):
     print(pred)
 
 if __name__=='__main__':
-    test = pd.read_csv('data/test.csv')
+    test = pd.read_csv('../data/test.csv')
     for ind in test.index:
         user = test['user_id'][ind]-1
         item = test['movie_id'][ind]-1
