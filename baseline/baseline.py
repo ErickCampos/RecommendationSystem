@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import math
+import time
 
 def baseline():
     mat = np.load('../train.npy')
@@ -28,4 +29,6 @@ def average(index):
     return mean
 
 if __name__=='__main__':
-    baseline()     
+    start_time = time.time()
+    baseline()
+    print(time.time() - start_time)
