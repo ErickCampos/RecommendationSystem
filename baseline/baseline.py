@@ -23,7 +23,7 @@ def average(index):
             total += i-globalMean
             cont += 1
     if cont == 0:
-        mean = np.NaN
+        mean = 0
     else:
         mean = total/cont
     return mean
