@@ -3,7 +3,7 @@ import pandas as pd
 import time
 
 def predict(user,item):
-    features = np.load('features.npy')
+    features = np.load('feat.npy')
     profiles = np.load('profiles.npy')
     pred = np.dot(profiles[user,:], features[item,:])
     if pred < 0.0:
