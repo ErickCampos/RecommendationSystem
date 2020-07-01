@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt                                                 
-
+import time 
 
 class gradient:
     globalMean = 0
@@ -20,8 +19,10 @@ class gradient:
         self.lr = lr
         self.reg = reg
         self.miter = miter
-        self.p = np.full((self.nUsers,k),0.1)
-        self.q = np.full((self.nUsers,k),0.1)
+        #self.p = np.full((self.nUsers,k),0.1)
+        self.p = np.random.rand(self.nUsers,k)
+        self.q = np.random.rand(self.nItens,k)
+       # self.q = np.full((self.nItens,k),0.1)
 
     def optFunkSVD(self):
         mat = np.load('../train.npy')
@@ -45,18 +46,30 @@ class gradient:
                     self.p[u][f] = self.p[u][f] + self.lr*(e * self.q[i][f] - self.reg * self.p[u][f])
                     self.q[i][f] = self.q[i][f] + self.lr * (e * temp - self.reg * self.q[i][f])
             rmse = np.sqrt(error/len(dados.index))
-            print(rmse)
-        #plt.show()
+            print('RMSE:  ',rmse)
+            if rmse <= 0.1:
+                print('Salvando modelo...')
+                np.save('p.npy',self.p)
+                np.save('q.npy',self.q)
+                np.save('bu.npy',self.bu)
+                np.save('bi.npy',self.bi)
+                return
+        np.save('p.npy',self.p)
+        np.save('q.npy',self.q)
+        np.save('bu.npy',self.bu)
+        np.save('bi.npy',self.bi)
 
     def predict(self,user,item):
         pred = self.globalMean + self.bu[user] + self.bi[item] + np.dot(self.p[user,:],self.q[item,:])
         print(pred)
 
 if __name__=='__main__':
-    ob = gradient(4,0.05,0.02,500)
+    start_time = time.time()
+    ob = gradient(250,0.01,0.002,60)
     ob.optFunkSVD()
-    test = pd.read_csv('../data/test.csv')
-    for ind in test.index:
-        user = test['user_id'][ind]-1
-        item = test['movie_id'][ind]-1
-        ob.predict(user,item)        
+    #test = pd.read_csv('../data/test.csv')
+    #for ind in test.index:
+    #    user = test['user_id'][ind]-1
+    #    item = test['movie_id'][ind]-1
+    #    ob.predict(user,item)        
+    print('Tempo:  ', time.time()-start_time)
